@@ -1,0 +1,20 @@
+name: staging test
+
+on:
+  pull_request:
+    branches: [main]
+    types: [closed]
+
+jobs:
+  test:
+    if: github.event.pull_request.merged == true
+    # runs-on: ubuntu-latest
+    runs-on: self-hosted
+    steps:
+      - uses: actions/checkout@v2
+      - run: docker build -t "prashantstha17/git_action" nodeHello/
+      - run: docker login -u "prashantstha17" -p "icanwalk#99"
+      - run: docker push prashantstha17/git_action:latest
+      - run: docker-compose pull
+      - run: docker-compose up -d
+      - run: docker-compose restart
